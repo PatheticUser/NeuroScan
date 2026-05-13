@@ -1,4 +1,4 @@
-# Brain Tumor Detection
+# NeuroScan
 
 > **NeuroScan** — AI-powered brain tumor detection from MRI scans using YOLO-based object detection.
 >
