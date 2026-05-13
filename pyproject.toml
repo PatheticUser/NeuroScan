@@ -1,0 +1,21 @@
+[project]
+name = "brain-tumor-detection"
+version = "0.1.0"
+description = "AI-powered brain tumor detection from MRI scans"
+readme = "README.md"
+requires-python = ">=3.11.14"
+dependencies = [
+    "fastapi>=0.136.1",
+    "ipykernel>=7.2.0",
+    "onnxruntime>=1.26.0",
+    "opencv-python-headless>=4.13.0.92",
+    "pillow>=12.2.0",
+    "plotly>=6.7.0",
+    "pydantic>=2.13.4",
+    "python-multipart>=0.0.28",
+    "ultralytics>=8.4.48",
+    "uvicorn>=0.46.0",
+]
+
+[project.scripts]
+neuroscan = "src.api:main"

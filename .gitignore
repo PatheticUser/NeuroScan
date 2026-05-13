@@ -1,0 +1,46 @@
+# ── Python ──
+__pycache__/
+*.py[oc]
+*.pyc
+build/
+dist/
+wheels/
+*.egg-info/
+*.egg
+.python-version
+
+# ── Virtual environments ──
+.venv
+venv/
+env/
+.venvs/
+
+# ── IDEs & Editors ──
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Environment ──
+.env
+.env.local
+.env.*.local
+
+# ── Frontend ──
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/*.tsbuildinfo
+
+# ── macOS ──
+.DS_Store
+Thumbs.db
+
+# ── Development / large files (not needed in git) ──
+notebooks/
+test_images/
+data/
+*.ipynb
+*.ipynb_checkpoints/
+

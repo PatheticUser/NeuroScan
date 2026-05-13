@@ -1,0 +1,57 @@
+# ── Version control ──
+.git
+.gitignore
+.gitattributes
+
+# ── Python ──
+.venv
+venv/
+env/
+.venvs/
+__pycache__/
+*.py[cod]
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+wheels/
+*.whl
+*.egg
+
+# ── Environment ──
+.env
+.env.local
+.env.production
+.env.*.local
+
+# ── Runtime ──
+.python-version
+pip-wheel-metadata/
+
+# ── IDE & editors ──
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Frontend (built separately in Docker multi-stage) ──
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# ── Development / large files (not needed in production) ──
+notebooks/
+test_images/
+data/
+*.ipynb
+
+# ── Project docs & scripts ──
+run.sh
+README.md
+*.md
+LICENSE
