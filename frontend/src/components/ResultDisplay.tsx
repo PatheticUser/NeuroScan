@@ -188,6 +188,8 @@ function AnnotatedImage({ imageUrl, predictions }: { imageUrl: string; predictio
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full rounded-lg"
+        aria-label="Annotated MRI scan with detection bounding boxes"
+        role="img"
       />
       {!imageLoaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-100 rounded-lg">

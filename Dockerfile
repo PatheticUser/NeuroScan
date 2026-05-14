@@ -33,12 +33,7 @@ LABEL org.opencontainers.image.authors="NeuroScan Team"
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # ── System dependencies ──
-# Only essential runtime libraries; no build tools needed since ONNX is pre-compiled
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#     curl \
-#     && rm -rf /var/lib/apt/lists/*
-
-# Replace your current apt-get block with this:
+# Essential runtime libraries for OpenCV image processing
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
     libglib2.0-0 \
@@ -87,10 +82,6 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 RUN chown -R neuroscan:neuroscan /app
 USER neuroscan:neuroscan
 
-# REMOVE THE APT-GET BLOCK ENTIRELY
-# RUN apt-get update && apt-get install -y --no-install-recommends curl ...
-
-# UPDATE THE HEALTHCHECK TO USE PYTHON INSTEAD OF CURL
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health', timeout=5)" || exit 1
 

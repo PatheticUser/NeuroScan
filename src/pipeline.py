@@ -39,16 +39,19 @@ class BrainTumorPipeline:
     def execute(self, tensor: np.ndarray) -> List[np.ndarray]:
         return self.session.run(self.output_names, {self.input_name: tensor})
 
-    def postprocess(self, outputs: List[np.ndarray], ratio: float, conf_thresh: float = 0.5, iou_thresh: float = 0.45) -> Tuple[np.ndarray, np.ndarray]:
+    def postprocess(self, outputs: List[np.ndarray], ratio: float, conf_thresh: float = 0.5, iou_thresh: float = 0.45) -> np.ndarray:
         boxes_scores = outputs[0][0] if len(outputs) > 0 else np.array([])
-        masks = outputs[1][0] if len(outputs) > 1 else np.array([])
-        
+
         if boxes_scores.size > 0 and len(boxes_scores.shape) > 1:
+            # Validate output shape: expect [x1, y1, x2, y2, confidence, class_id, ...]
+            if boxes_scores.shape[1] < 6:
+                raise ValueError(f"Unexpected model output shape: {boxes_scores.shape}. Expected at least 6 columns (x1, y1, x2, y2, confidence, class_id).")
+
             boxes_scores[:, :4] /= ratio
             confs = boxes_scores[:, 4]
             valid_idx = confs >= conf_thresh
             boxes_scores = boxes_scores[valid_idx]
-            
+
             if len(boxes_scores) > 0:
                 boxes = boxes_scores[:, :4]
                 scores = boxes_scores[:, 4]
@@ -58,28 +61,8 @@ class BrainTumorPipeline:
                     boxes_scores = boxes_scores[indices.flatten()]
                 else:
                     boxes_scores = np.array([])
-            
-        return boxes_scores, masks
 
-    def overlay_segmentation(self, img: np.ndarray, masks: np.ndarray, boxes_scores: np.ndarray) -> np.ndarray:
-        overlay = img.copy()
-        if masks.size > 0:
-            mask = cv2.resize(masks[0], (img.shape[1], img.shape[0])) if len(masks.shape) > 2 else masks
-            colored_mask = np.zeros_like(img)
-            colored_mask[:, :, 2] = mask * 255
-            cv2.addWeighted(colored_mask, 0.5, overlay, 1.0, 0, overlay)
-            
-        if boxes_scores.size > 0 and len(boxes_scores.shape) > 1:
-            for box_score in boxes_scores:
-                x1, y1, x2, y2 = box_score[:4].astype(int)
-                conf = float(box_score[4])
-                cls_id = int(box_score[5])
-                cls_name = self.CLASSES[cls_id] if cls_id < len(self.CLASSES) else str(cls_id)
-                cv2.rectangle(overlay, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                label = f"{cls_name}: {conf:.2f}"
-                cv2.putText(overlay, label, (x1, max(y1 - 10, 0)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                
-        return overlay
+        return boxes_scores
 
     def format_output(self, img: np.ndarray, boxes_scores: np.ndarray) -> Dict[str, Any]:
         predictions = []
@@ -107,5 +90,5 @@ class BrainTumorPipeline:
         resized_img, ratio = self.resize(img)
         tensor = self.normalize(resized_img)
         outputs = self.execute(tensor)
-        boxes_scores, masks = self.postprocess(outputs, ratio)
+        boxes_scores = self.postprocess(outputs, ratio)
         return self.format_output(img, boxes_scores)

@@ -1,10 +1,3 @@
-export interface BoundingBox {
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-}
-
 export interface Prediction {
   class_id: number;
   class_name: string;

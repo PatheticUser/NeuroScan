@@ -41,6 +41,12 @@ install_python_deps() {
   echo -e "${GREEN}  ✓ Python dependencies installed${NC}"
 }
 
+install_python_deps_dev() {
+  echo -e "${BLUE}[1/3] Installing Python dependencies (with dev extras)...${NC}"
+  uv sync --all-extras
+  echo -e "${GREEN}  ✓ Python dependencies installed${NC}"
+}
+
 install_frontend_deps() {
   echo -e "${BLUE}[2/3] Installing frontend dependencies...${NC}"
   cd frontend
@@ -80,7 +86,7 @@ case "$MODE" in
     echo -e "${CYAN}╚══════════════════════════════════════╝${NC}"
     echo ""
     check_deps
-    install_python_deps
+    install_python_deps_dev
     install_frontend_deps
 
     # Start backend with auto-reload and wait for it to be ready

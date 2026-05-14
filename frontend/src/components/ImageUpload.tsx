@@ -34,8 +34,12 @@ export default function ImageUpload({ onImageSelected, state }: ImageUploadProps
       setIsDragging(false);
 
       const files = e.dataTransfer.files;
-      if (files.length > 0 && files[0].type.startsWith("image/")) {
-        onImageSelected(files[0]);
+      if (files.length > 0) {
+        const file = files[0];
+        // Accept standard images and DICOM files
+        if (file.type.startsWith("image/") || file.name.endsWith(".dcm") || file.name.endsWith(".dicom")) {
+          onImageSelected(file);
+        }
       }
     },
     [onImageSelected]
@@ -88,7 +92,7 @@ export default function ImageUpload({ onImageSelected, state }: ImageUploadProps
           <input
             ref={inputRef}
             type="file"
-            accept="image/*"
+            accept="image/*,.dcm,.dicom"
             onChange={handleFileChange}
             className="hidden"
             disabled={isLoading}
@@ -147,6 +151,9 @@ export default function ImageUpload({ onImageSelected, state }: ImageUploadProps
                   </span>
                   <span className="px-3 py-1 text-xs font-medium text-slate-500 bg-slate-100 rounded-full">
                     JPG
+                  </span>
+                  <span className="px-3 py-1 text-xs font-medium text-purple-500 bg-purple-50 rounded-full">
+                    DICOM
                   </span>
                 </div>
               </>
