@@ -34,8 +34,16 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # ── System dependencies ──
 # Only essential runtime libraries; no build tools needed since ONNX is pre-compiled
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     curl \
+#     && rm -rf /var/lib/apt/lists/*
+
+# Replace your current apt-get block with this:
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
+    libgl1 \
+    libglib2.0-0 \
+    libxcb1 \
+    libx11-6 \
     && rm -rf /var/lib/apt/lists/*
 
 # ── Install uv (faster package manager) ──
@@ -79,9 +87,12 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 RUN chown -R neuroscan:neuroscan /app
 USER neuroscan:neuroscan
 
-# ── Healthcheck ──
+# REMOVE THE APT-GET BLOCK ENTIRELY
+# RUN apt-get update && apt-get install -y --no-install-recommends curl ...
+
+# UPDATE THE HEALTHCHECK TO USE PYTHON INSTEAD OF CURL
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl --fail http://localhost:8000/api/health || exit 1
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health', timeout=5)" || exit 1
 
 # ── Port ──
 EXPOSE 8000

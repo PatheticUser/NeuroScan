@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Brain Tumor Detection API", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="NeuroScan API", version="1.0.0", lifespan=lifespan)
 
 # CORS middleware for development
 app.add_middleware(
